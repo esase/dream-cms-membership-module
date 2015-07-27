@@ -9,6 +9,7 @@ use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
 use Payment\Model\PaymentBase as PaymentBaseModel;
 use Application\Service\ApplicationSetting as SettingService;
+use Application\Utility\ApplicationFileSystem as FileSystemUtility;
 
 /*
 use Application\Utility\ErrorLogger;
@@ -37,6 +38,33 @@ class MembershipBase extends ApplicationAbstractBase
      * Membership level not active status flag
      */
     const MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE = 0;
+
+    /**
+     * Images directory
+     * @var string
+     */
+    protected static $imagesDir = 'membership/';
+
+    /**
+     * Delete an membership's image
+     *
+     * @param string $imageName
+     * @return boolean
+     */
+    protected function deleteImage($imageName)
+    {
+        return FileSystemUtility::deleteResourceFile($imageName, self::$imagesDir);
+    }
+
+    /**
+     * Get images directory name
+     *
+     * @return string
+     */
+    public static function getImagesDir()
+    {
+        return self::$imagesDir;
+    }
 
     /**
      * Get membership levels

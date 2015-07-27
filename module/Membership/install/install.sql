@@ -30,8 +30,8 @@ INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 ('add_membership_role', @moduleId, 'Event - Adding membership roles'),
 ('edit_membership_role', @moduleId, 'Event - Editing membership roles'),
 ('delete_membership_role', @moduleId, 'Event - Deleting membership roles'),
-('delete_membership_conection', @moduleId, 'Event - Deleting membership connections'),
-('activate_membership_conection', @moduleId, 'Event - Activating membership connections');
+('delete_membership_connection', @moduleId, 'Event - Deleting membership connections'),
+('activate_membership_connection', @moduleId, 'Event - Activating membership connections');
 
 -- application settings
 

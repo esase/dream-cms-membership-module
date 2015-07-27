@@ -1,4 +1,4 @@
-<?php $this->declareVars('subPageTitle') ?>
+<?php $this->declareVars('subPageTitle', 'content') ?>
 <?php $this->subPageTitle = $this->translate('List of membership levels') ?>
 <?php $this->headTitle($this->subPageTitle) ?>
 
@@ -24,7 +24,7 @@
 ]) ?>
 
 <!-- render a data grid -->
-<?php echo $this->partial('partial/data-grid', [
+<?php $this->content =  $this->partial('partial/data-grid', [
     'controller' => 'membership-administration',
     'action' => 'list',
     'order_by' => $this->order_by,
@@ -126,4 +126,10 @@
             ]
         ]
     ]
+]) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Membership Levels'),
+    'body' => $this->content
 ]) ?>

@@ -35,6 +35,10 @@ return [
         'xmlrpc'        => false
     ],
     'resources' => [
+        [
+            'dir_name' => 'membership',
+            'is_public' => true
+        ]
     ],
     'install_sql' => __DIR__ . '/../install/install.sql',
     'install_intro' => 'membership_install_intro',

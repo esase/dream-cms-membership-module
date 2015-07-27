@@ -85,4 +85,58 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
             'per_page' => $this->getPerPage()
         ]);
     }
+
+    /**
+     * Add a new role action
+     */
+    public function addRoleAction()
+    {
+        // get an acl role form
+        $aclRoleForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Membership\Form\MembershipAclRole');
+
+        $request  = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
+            // fill the form with received values
+            $aclRoleForm->getForm()->setData($post, false);
+
+            // save data
+            if ($aclRoleForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                // add a new role
+                $result = $this->getModel()->addRole($aclRoleForm->
+                        getForm()->getData(), $this->params()->fromFiles('image'));
+
+                if (is_numeric($result)) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Role has been added'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('membership-administration', 'add-role');
+            }
+        }
+
+        return new ViewModel([
+            'role_form' => $aclRoleForm->getForm()
+        ]);
+    }
 }

@@ -71,7 +71,7 @@ class MembershipFilter extends ApplicationAbstractCustomForm
     /**
      * Get form instance
      *
-     * @return object
+     * @return Application\Form\ApplicationCustomFormBuilder
      */
     public function getForm()
     {
