@@ -1,0 +1,129 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('List of membership levels') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('membership/membership-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list' // selected action is "list"
+]) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
+            'name' => $this->subPageTitle,
+            'controller' => 'membership-administration',
+            'action' => 'list',
+            'check_acl' => true
+        ]
+    ]
+]) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('partial/data-grid', [
+    'controller' => 'membership-administration',
+    'action' => 'list',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => [
+        [
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ],
+        [
+            'title' => $this->translate('Title'),
+            'order_name' => 'title'
+        ],
+        [
+            'title' => $this->translate('Cost'),
+            'order_name' => 'cost'
+        ],
+        [
+            'title' => $this->translate('Lifetime in days'),
+            'order_name' => 'lifetime'
+        ],
+        [
+            'title' => $this->translate('Status'),
+            'order_name' => 'active'
+        ],
+        [
+            'title' => $this->translate('Membership subscribers'),
+            'order_name' => 'subscribers'
+        ],
+        [
+            'title' => $this->translate('Role')
+        ]
+    ],
+    'paginator' => $this->paginator,
+    'skipped_fields' => [
+        'currency',
+        'description',
+        'image',
+        'role_id'
+    ],
+    'helpers' => [
+        'role' => 'translate',
+        'cost' => 'paymentCostFormat',
+        'active' => 'booleanValue',
+    ],
+    'helpers_set_array' => [
+        'cost' => true
+    ],
+    'helpers_options' => [
+        'active' => [
+            'true_string' => $this->translate('approved'),
+            'false_string' => $this->translate('disapproved')
+        ]
+    ],
+    'actions' => [
+        'regular_actions' => [
+            [
+                'name' => $this->translate('Add a role'),
+                'controller' => 'membership-administration',
+                'action' => 'add-role',
+                'check_acl' => true
+            ]
+        ],
+        'multiple_actions' => [
+            [
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'membership-administration',
+                'action' => 'delete-roles',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected roles will be deleted. Are you sure?')
+            ]
+        ],
+        'single_actions' => [
+            [
+                'name' => $this->translate('Edit the role'),
+                'controller' => 'membership-administration',
+                'action' => 'edit-role',
+                'check_acl' => true,
+                'image' => $this->layoutAsset('icon/edit_action.png', 'image')
+            ]
+        ]
+    ],
+    'actions_options' => [
+        'action_identity' => 'id',
+        'form_name' => 'memberships',
+        'multiple_actions' => [
+            'items_name' => 'roles[]'
+        ]
+    ],
+    'actions_extra_check' => [
+        'multiple_actions' => [
+            'subscribers' => [
+                'param' => 'subscribers',
+                'condition' =>  'return (int) "__value__" ? false : true;'
+            ]
+        ]
+    ]
+]) ?>
