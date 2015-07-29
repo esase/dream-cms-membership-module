@@ -139,4 +139,65 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
             'role_form' => $aclRoleForm->getForm()
         ]);
     }
+
+    /**
+     * Delete selected membership levels
+     */
+    public function deleteRolesAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            if (null !== ($rolesIds = $request->getPost('roles', null))) {
+                // delete selected membership roles
+                $deleteResult = false;
+                $deletedCount = 0;
+
+                foreach ($rolesIds as $roleId) {
+                    // get the role info, membership levels cannot be deleted  while they contain subscribers
+                    if (null == ($roleInfo = $this->getModel()->getRoleInfo($roleId))
+                            || $roleInfo['subscribers']) {
+
+                        continue;
+                    }
+
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
+                    }
+
+                    // delete the role
+                    if (true !== ($deleteResult = $this->getModel()->deleteRole($roleInfo))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
+                                : $this->getTranslator()->translate('Error occurred')));
+
+                        break;
+                    }
+
+                    $deletedCount++;
+                }
+
+                if (true === $deleteResult) {
+                    $message = $deletedCount > 1
+                        ? 'Selected membership levels have been deleted'
+                        : 'The selected membership level has been deleted';
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate($message));
+                }
+            }
+        }
+
+        // redirect back
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo('membership-administration', 'list', [], true);
+    }
 }

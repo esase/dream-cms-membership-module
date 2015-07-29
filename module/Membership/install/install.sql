@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     `expiration_notification` SMALLINT(5) UNSIGNED NOT NULL,
     `description` TEXT NOT NULL,
     `language` CHAR(2) DEFAULT NULL,
-    `image` VARCHAR(100) NOT NULL,
+    `image` VARCHAR(100) DEFAULT NULL,
     `active` TINYINT(1) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     KEY `title` (`title`),

@@ -2,6 +2,8 @@
 
 namespace Membership\Model;
 
+use Membership\Event\MembershipEvent;
+use Application\Utility\ApplicationErrorLogger;
 use Application\Model\ApplicationAbstractBase;
 use Application\Utility\ApplicationPagination as PaginationUtility;
 use Zend\Paginator\Paginator;
@@ -10,22 +12,8 @@ use Zend\Db\Sql\Expression as Expression;
 use Payment\Model\PaymentBase as PaymentBaseModel;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationFileSystem as FileSystemUtility;
-
-/*
-use Application\Utility\ErrorLogger;
-use Exception;
 use Membership\Exception\MembershipException;
-use Application\Model\AbstractBase;
-use Application\Utility\FileSystem as FileSystemUtility;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Expression as Expression;
-use Payment\Model\Base as PaymentBaseModel;
-use Application\Service\Service as ApplicationService;
-use Application\Utility\Pagination as PaginationUtility;
-use Zend\Paginator\Paginator;
-use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
-use Membership\Event\Event as MembershipEvent;
-*/
+use Exception;
 
 class MembershipBase extends ApplicationAbstractBase
 {
@@ -183,5 +171,106 @@ class MembershipBase extends ApplicationAbstractBase
         $paginator->setPageRange(SettingService::getSetting('application_page_range'));
 
         return $paginator;
+    }
+
+    /**
+     * Get the role info
+     *
+     * @param integer $id
+     * @param boolean $onlyActive
+     * @return array
+     */
+    public function getRoleInfo($id, $onlyActive = false)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'membership_level'])
+            ->columns([
+                'id',
+                'title',
+                'role_id',
+                'cost',
+                'lifetime',
+                'expiration_notification',
+                'description',
+                'language',
+                'image',
+                'active'
+            ])
+            ->join(
+                ['b' => 'membership_level_connection'],
+                'b.membership_id = a.id',
+                [
+                    'subscribers' => new Expression('count(b.id)'),
+                ],
+                'left'
+            )
+            ->join(
+                ['c' => 'acl_role'],
+                'c.id = a.role_id',
+                [
+                    'role_name' => 'name'
+                ]
+            )
+            ->where([
+                'a.id' => $id
+            ])
+            ->group('a.id');
+
+        if ($onlyActive) {
+            $select->where([
+                'a.active' => self::MEMBERSHIP_LEVEL_STATUS_ACTIVE
+            ]);
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
+
+    /**
+     * Delete the role
+     *
+     * @param array $roleInfo
+     *      integer id required
+     *      string image required
+     * @param boolean $isSystem
+     * @throws MembershipException
+     * @return boolean|string
+     */
+    public function deleteRole($roleInfo, $isSystem = false)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('membership_level')
+                ->where([
+                    'id' => $roleInfo['id']
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            // delete the image
+            if ($roleInfo['image']) {
+                if (true !== ($imageDeleteResult = $this->deleteImage($roleInfo['image']))) {
+                    throw new MembershipException('Image deleting failed');
+                }
+            }
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the delete membership role event
+        MembershipEvent::fireDeleteMembershipRoleEvent($roleInfo['id'], $isSystem);
+
+        return $result->count() ? true : false;
     }
 }

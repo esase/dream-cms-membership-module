@@ -6,6 +6,7 @@ use Application\Form\ApplicationCustomFormBuilder;
 use Application\Form\ApplicationAbstractCustomForm;
 use Acl\Service\Acl as AclService;
 use Membership\Model\MembershipBase as MembershipBaseModel;
+use Acl\Model\AclBase as AclBaseModel;
 
 class MembershipFilter extends ApplicationAbstractCustomForm
 {
@@ -77,9 +78,21 @@ class MembershipFilter extends ApplicationAbstractCustomForm
     {
         // get form builder
         if (!$this->form) {
-            // get list of acl roles
-            $this->formElements['role']['values'] = AclService::getAclRoles();
+            // get list of all ACL roles
+            $aclRoles = [];
+            foreach (AclService::getAclRoles() as $roleId => $roleName) {
+                // skip all system ACL roles
+                if (in_array($roleId, [AclBaseModel::DEFAULT_ROLE_ADMIN,
+                    AclBaseModel::DEFAULT_ROLE_GUEST, AclBaseModel::DEFAULT_ROLE_MEMBER])) {
 
+                    continue;
+                }
+
+                $aclRoles[$roleId] = $roleName;
+            }
+
+            // get list of acl roles
+            $this->formElements['role']['values'] = $aclRoles;
             $this->form = new ApplicationCustomFormBuilder($this->formName,
                     $this->formElements, $this->translator, $this->ignoredElements, $this->notValidatedElements, $this->method);    
         }

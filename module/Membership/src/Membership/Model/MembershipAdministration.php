@@ -81,7 +81,7 @@ class MembershipAdministration extends MembershipBase
             $update = $this->update()
                 ->table('membership_level')
                 ->set([
-                    'image' => ''
+                    'image' => null
                 ])
                 ->where([
                     'id' => $membershipId
@@ -109,6 +109,10 @@ class MembershipAdministration extends MembershipBase
 
         try {
             $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            if (empty($formData['active'])) {
+                $formData['active'] = self::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE;
+            }
 
             $insert = $this->insert()
                 ->into('membership_level')
