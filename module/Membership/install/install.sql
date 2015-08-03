@@ -80,7 +80,7 @@ INSERT INTO `application_setting_value` (`setting_id`, `value`, `language`) VALU
 -- payment integration
 
 INSERT INTO `payment_module` (`module`, `update_event`, `delete_event`, `page_name`, `countable`, `multi_costs`, `must_login`, `handler`, `extra_options`) VALUES
-(@moduleId, 'edit_membership_role', 'delete_membership_role', 'buy-membership', 0, 0, 1, '\\Membership\\PaymentHandler\\Handler', NULL);
+(@moduleId, 'edit_membership_role', 'delete_membership_role', 'buy-membership', 0, 0, 1, '\\Membership\\PaymentHandler\\MembershipHandler', NULL);
 
 -- module's tables
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     `lifetime` SMALLINT(5) UNSIGNED NOT NULL,
     `expiration_notification` SMALLINT(5) UNSIGNED NOT NULL,
     `description` TEXT NOT NULL,
-    `language` CHAR(2) DEFAULT NULL,
+    `language` CHAR(2) NOT NULL,
     `image` VARCHAR(100) DEFAULT NULL,
     `active` TINYINT(1) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     KEY `active` (`active`, `language`),
     FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
         ON UPDATE CASCADE
-        ON DELETE SET NULL
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `membership_level_connection` (

@@ -10,16 +10,6 @@ use Membership\Event\MembershipEvent;
 use Application\Utility\ApplicationErrorLogger;
 use Exception;
 
-/*
-use Exception;
-use Membership\Exception\MembershipException;
-use Application\Service\Service as ApplicationService;
-use Application\Utility\ErrorLogger;
-use Application\Utility\FileSystem as FileSystemUtility;
-use Application\Utility\Image as ImageUtility;
-use Membership\Event\Event as MembershipEvent;
-*/
-
 class MembershipAdministration extends MembershipBase
 {
     /**
@@ -138,5 +128,53 @@ class MembershipAdministration extends MembershipBase
         MembershipEvent::fireAddMembershipRoleEvent($insertId);
 
         return $insertId;
+    }
+
+    /**
+     * Edit role
+     *
+     * @param array $roleInfo
+     * @param array $formData
+     *      integer role_id - required
+     *      integer cost - required
+     *      integer lifetime - required
+     *      string description - required
+     *      string image - required
+     * @param array $image
+     * @return boolean|string
+     */
+    public function editRole($roleInfo, array $formData, array $image)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            if (empty($formData['active'])) {
+                $formData['active'] = self::MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE;
+            }
+
+            $update = $this->update()
+                ->table('membership_level')
+                ->set($formData)
+                ->where([
+                    'id' => $roleInfo['id']
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->uploadImage($roleInfo['id'], $image, $roleInfo['image']);
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the edit membership role event
+        MembershipEvent::fireEditMembershipRoleEvent($roleInfo['id']);
+
+        return true;
     }
 }

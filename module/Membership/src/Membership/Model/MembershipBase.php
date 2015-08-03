@@ -9,6 +9,7 @@ use Application\Utility\ApplicationPagination as PaginationUtility;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
+use Zend\Db\ResultSet\ResultSet;
 use Payment\Model\PaymentBase as PaymentBaseModel;
 use Application\Service\ApplicationSetting as SettingService;
 use Application\Utility\ApplicationFileSystem as FileSystemUtility;
@@ -178,9 +179,10 @@ class MembershipBase extends ApplicationAbstractBase
      *
      * @param integer $id
      * @param boolean $onlyActive
+     * @param boolean $currentLanguage
      * @return array
      */
-    public function getRoleInfo($id, $onlyActive = false)
+    public function getRoleInfo($id, $onlyActive = false, $currentLanguage = false)
     {
         $select = $this->select();
         $select->from(['a' => 'membership_level'])
@@ -219,6 +221,12 @@ class MembershipBase extends ApplicationAbstractBase
         if ($onlyActive) {
             $select->where([
                 'a.active' => self::MEMBERSHIP_LEVEL_STATUS_ACTIVE
+            ]);
+        }
+
+        if ($currentLanguage) {
+            $select->where([
+                'a.language' => $this->getCurrentLanguage()
             ]);
         }
 
@@ -272,5 +280,112 @@ class MembershipBase extends ApplicationAbstractBase
         MembershipEvent::fireDeleteMembershipRoleEvent($roleInfo['id'], $isSystem);
 
         return $result->count() ? true : false;
+    }
+
+    /**
+     * Get all user's membership connections
+     *
+     * @param integer $userId
+     * @param boolean $fullInfo 
+     * @return Zend\Db\ResultSet\ResultSet
+     */
+    public function getAllUserMembershipConnections($userId, $fullInfo = false)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'membership_level_connection'])
+            ->columns([
+                'id',
+                'active',
+                'expire_date',
+                'expire_value'
+            ]);
+
+        if ($fullInfo) {
+            $select->join(
+                ['b' => 'membership_level'],
+                'a.membership_id = b.id',
+                [
+                    'title',
+                    'role_id',
+                    'cost',
+                    'lifetime',
+                    'expiration_notification',
+                    'description',
+                    'language',
+                    'image'
+                ]
+            );
+        }
+
+        $select->where([
+            'user_id' => $userId
+        ])
+        ->order('a.id');
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+
+        return $resultSet->initialize($statement->execute());
+    }
+
+    /**
+     * Delete the membership connection
+     *
+     * @param integer $connectionId
+     * @param boolean $isSystem
+     * @return boolean|string
+     */
+    public function deleteMembershipConnection($connectionId, $isSystem = true)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('membership_level_connection')
+                ->where([
+                    'id' => $connectionId
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the delete membership connection event
+        MembershipEvent::fireDeleteMembershipConnectionEvent($connectionId, $isSystem);
+
+        return $result->count() ? true : false;
+    }
+
+    /**
+     * Get all memberhip levels
+     *
+     * @param integer $roleId
+     * @return array
+     */
+    public function getAllMembershipLevels($roleId)
+    {
+        $select = $this->select();
+        $select->from('membership_level')
+            ->columns([
+                'id',
+                'image'
+            ])
+            ->where([
+                'role_id' => $roleId
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
     }
 }

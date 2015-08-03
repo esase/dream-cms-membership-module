@@ -87,6 +87,73 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
     }
 
     /**
+     * Edit a role action
+     */
+    public function editRoleAction()
+    {
+        // get the role info
+        if (null == ($role = $this->
+                getModel()->getRoleInfo($this->getSlug(), false, true))) {
+
+            return $this->redirectTo('membership-administration', 'list');
+        }
+
+        // get an acl role form
+        $aclRoleForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Membership\Form\MembershipAclRole')
+            ->setEditMode(true)
+            ->setImage($role['image']);
+
+        $aclRoleForm->getForm()->setData($role);
+
+        $request = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // make certain to merge the files info!
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
+            // fill the form with received values
+            $aclRoleForm->getForm()->setData($post, false);
+
+            // save data
+            if ($aclRoleForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                // edit the role
+                if (true == ($result = $this->getModel()->editRole($role, 
+                        $aclRoleForm->getForm()->getData(), $this->params()->fromFiles('image')))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Role has been edited'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('membership-administration', 'edit-role', [
+                    'slug' => $role['id']
+                ]);
+            }
+        }
+
+        return new ViewModel([
+            'role' => $role,
+            'role_form' => $aclRoleForm->getForm()
+        ]);
+    }
+
+    /**
      * Add a new role action
      */
     public function addRoleAction()

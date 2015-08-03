@@ -11,18 +11,6 @@
     'active' => 'list' // selected action is "list"
 ]) ?>
 
-<!-- render a breadcrumb -->
-<?php echo $this->partial('administration-partial/breadcrumb', [
-    'pages' => [
-        'list' => [
-            'name' => $this->subPageTitle,
-            'controller' => 'membership-administration',
-            'action' => 'list',
-            'check_acl' => true
-        ]
-    ]
-]) ?>
-
 <!-- render a data grid -->
 <?php $this->content =  $this->partial('partial/data-grid', [
     'controller' => 'membership-administration',
