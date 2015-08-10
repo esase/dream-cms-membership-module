@@ -3,7 +3,8 @@
 return [
     'controllers' => [
         'invokables' => [
-            'membership-administration' => 'Membership\Controller\MembershipAdministrationController'
+            'membership-administration' => 'Membership\Controller\MembershipAdministrationController',
+            'memberships-console' => 'Membership\Controller\MembershipConsoleController'
         ]
     ],
     'router' => [
@@ -13,6 +14,15 @@ return [
     'console' => [
         'router' => [
             'routes' => [
+                'membership clean connections' => [
+                    'options' => [
+                        'route'    => 'membership clean expired connections [--verbose|-v]',
+                        'defaults' => [
+                            'controller' => 'memberships-console',
+                            'action'     => 'cleanExpiredMembershipsConnections'
+                        ]
+                    ]
+                ]
             ]
         ]
     ],

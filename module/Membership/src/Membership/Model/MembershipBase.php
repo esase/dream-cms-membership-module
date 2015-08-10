@@ -19,6 +19,11 @@ use Exception;
 class MembershipBase extends ApplicationAbstractBase
 {
     /**
+     * Seconds in a day
+     */
+    const SECONDS_IN_DAY = 86400;
+
+    /**
      * Membership level active status flag
      */
     const MEMBERSHIP_LEVEL_STATUS_ACTIVE = 1;
@@ -27,6 +32,16 @@ class MembershipBase extends ApplicationAbstractBase
      * Membership level not active status flag
      */
     const MEMBERSHIP_LEVEL_STATUS_NOT_ACTIVE = 0;
+
+    /**
+     * Membership level connection active flag
+     */
+    const MEMBERSHIP_LEVEL_CONNECTION_ACTIVE = 1;
+
+    /**
+     * Membership level connection not active flag
+     */
+    const MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE = 0;
 
     /**
      * Images directory
@@ -276,10 +291,14 @@ class MembershipBase extends ApplicationAbstractBase
             return $e->getMessage();
         }
 
-        // fire the delete membership role event
-        MembershipEvent::fireDeleteMembershipRoleEvent($roleInfo['id'], $isSystem);
+        if ($result->count()) {
+            // fire the delete membership role event
+            MembershipEvent::fireDeleteMembershipRoleEvent($roleInfo['id'], $isSystem);
 
-        return $result->count() ? true : false;
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -358,10 +377,14 @@ class MembershipBase extends ApplicationAbstractBase
             return $e->getMessage();
         }
 
-        // fire the delete membership connection event
-        MembershipEvent::fireDeleteMembershipConnectionEvent($connectionId, $isSystem);
+        if ($result->count()) {
+            // fire the delete membership connection event
+            MembershipEvent::fireDeleteMembershipConnectionEvent($connectionId, $isSystem);
 
-        return $result->count() ? true : false;
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -387,5 +410,93 @@ class MembershipBase extends ApplicationAbstractBase
         $resultSet->initialize($statement->execute());
 
         return $resultSet->toArray();
+    }
+
+    /**
+     * Get a user's membership connection from a queue
+     *
+     * @param integer $userId
+     * @return array
+     */
+    public function getMembershipConnectionFromQueue($userId)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'membership_level_connection'])
+            ->columns([
+                'id',
+                'user_id'
+            ])
+            ->join(
+                ['b' => 'membership_level'],
+                'a.membership_id = b.id',
+                [
+                    'role_id',
+                    'lifetime',
+                    'expiration_notification'
+                ]
+            )
+            ->join(
+                ['c' => 'acl_role'],
+                'c.id = b.role_id',
+                [
+                    'role_name' => 'name'
+                ]
+            )
+            ->where([
+                'a.user_id' => $userId,
+                'a.active' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE
+            ])
+            ->order('a.id')
+            ->limit(1);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $result = $resultSet->initialize($statement->execute());
+
+        return $result->current();
+    }
+
+    /**
+     * Activate the membership connection
+     *
+     * @param integer $connectionId
+     * @return boolean
+     */
+    public function activateMembershipConnection($connectionId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $time = time();
+            $update = $this->update()
+                ->table('membership_level_connection')
+                ->set([
+                    'active' => self::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE,
+                    'expire_date' => new Expression('? + (expire_value * ?)', [$time, self::SECONDS_IN_DAY]),
+                    'notify_date' => new Expression('? + (notify_value * ?)', [$time, self::SECONDS_IN_DAY])
+                ])
+                ->where([
+                   'id' => $connectionId
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $result = $statement->execute();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        if ($result->count()) {
+            // fire the activate membership connection event
+            MembershipEvent::fireActivateMembershipConnectionEvent($connectionId);
+
+            return true;
+        }
+
+        return false;
     }
 }
