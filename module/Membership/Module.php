@@ -19,7 +19,9 @@ class Module implements ConsoleUsageProviderInterface
     {
         $eventManager = MembershipEvent::getEventManager();
 
-        // TO - remove memberships 
+        // TODO - delete  related memberships while languages delete
+        // TODO - move synchronize users membership levels in console
+
         // someone forced a user's role, and now we must clean all the user's membership queue +
         $eventManager->attach(UserEvent::EDIT_ROLE, function ($e) use ($moduleManager) {
             if ($e->getParam('user_id') != UserBaseModel::DEFAULT_SYSTEM_ID) {
