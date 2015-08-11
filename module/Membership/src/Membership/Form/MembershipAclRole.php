@@ -55,12 +55,6 @@ class MembershipAclRole extends ApplicationAbstractCustomForm
     protected $image;
 
     /**
-     * Edit mode
-     * @var boolean
-     */
-    protected $editMode = false;
-
-    /**
      * Form elements
      * @var array
      */
@@ -171,11 +165,6 @@ class MembershipAclRole extends ApplicationAbstractCustomForm
                     ApplicationService::getResourcesUrl() . MembershipBaseModel::getImagesDir() . $this->image;
             }
 
-            // init edit mode
-            if ($this->editMode) {
-                unset($this->formElements['role_id']);
-            }
-
             // add extra validators
             $this->formElements['expiration_notification']['validators'] = [
                 [
@@ -203,19 +192,6 @@ class MembershipAclRole extends ApplicationAbstractCustomForm
     public function setImage($image)
     {
         $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * Set edit mode
-     *
-     * @param string $mode
-     * @return Membership\Form\MembershipAclRole
-     */
-    public function setEditMode($mode)
-    {
-        $this->editMode = $mode;
 
         return $this;
     }

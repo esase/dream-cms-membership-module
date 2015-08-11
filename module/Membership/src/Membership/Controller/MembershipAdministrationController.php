@@ -34,9 +34,9 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
      */
     public function settingsAction()
     {
-        return new ViewModel(array(
+        return new ViewModel([
             'settings_form' => parent::settingsForm('membership', 'membership-administration', 'settings')
-        ));
+        ]);
     }
 
     /**
@@ -102,7 +102,6 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
         $aclRoleForm = $this->getServiceLocator()
             ->get('Application\Form\FormManager')
             ->getInstance('Membership\Form\MembershipAclRole')
-            ->setEditMode(true)
             ->setImage($role['image']);
 
         $aclRoleForm->getForm()->setData($role);

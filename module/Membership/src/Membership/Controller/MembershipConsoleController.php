@@ -4,13 +4,9 @@ namespace Membership\Controller;
 
 use Application\Controller\ApplicationAbstractBaseConsoleController;
 use Acl\Model\AclBase as AclBaseModel;
-
-/*
-use Application\Controller\AbstractBaseConsoleController;
-use Application\Model\Acl as AclBaseModel;
-use User\Service\Service as UserService;
-use Application\Utility\EmailNotification;
-*/
+use Localization\Service\Localization as LocalizationService;
+use Application\Utility\ApplicationEmailNotification;
+use Application\Service\ApplicationServiceLocator as ApplicationServiceLocatorService;
 
 class MembershipConsoleController extends ApplicationAbstractBaseConsoleController
 {
@@ -27,7 +23,7 @@ class MembershipConsoleController extends ApplicationAbstractBaseConsoleControll
 
     /**
      * User Model instance
-     * @var User\Model\BaseUser  
+     * @var User\Model\UserBase  
      */
     protected $userModel;
 
@@ -50,14 +46,14 @@ class MembershipConsoleController extends ApplicationAbstractBaseConsoleControll
     /**
      * Get user model
      *
-     * @return User\Model\BaseUser
+     * @return User\Model\UserBase
      */
     protected function getUserModel()
     {
         if (!$this->userModel) {
             $this->userModel = $this->getServiceLocator()
                 ->get('Application\Model\ModelManager')
-                ->getInstance('User\Model\BaseUser');
+                ->getInstance('User\Model\UserBase');
         }
 
         return $this->userModel;
@@ -111,8 +107,10 @@ class MembershipConsoleController extends ApplicationAbstractBaseConsoleControll
         }
 
         // get list of not notified memberships connections
-        if ((int) $this->getSetting('membership_expiring_send')) {
-            if (null != ($notNotifiedConnections = $this->getModel()->getNotNotifiedMembershipsConnections())) {
+        if ((int) $this->applicationSetting('membership_expiring_send')) {
+            if (null != ($notNotifiedConnections = $this->
+                    getModel()->getNotNotifiedMembershipsConnections(self::ITEMS_LIMIT))) {
+
                 // process not notified memberships connections
                 foreach ($notNotifiedConnections as $connectionInfo) {
                     if (false === ($markResult = 
@@ -124,25 +122,27 @@ class MembershipConsoleController extends ApplicationAbstractBaseConsoleControll
                     // send a notification about membership expiring
                     $notificationLanguage = $connectionInfo['language']
                         ? $connectionInfo['language'] // we should use the user's language
-                        : UserService::getDefaultLocalization()['language'];
+                        : LocalizationService::getDefaultLocalization()['language'];
 
-                    EmailNotification::sendNotification($connectionInfo['email'],
-                            $this->getSetting('membership_expiring_send_title', $notificationLanguage),
-                            $this->getSetting('membership_expiring_send_message', $notificationLanguage), array(
-                                'find' => array(
+                    $locale = LocalizationService::getLocalizations()[$notificationLanguage]['locale'];
+
+                    ApplicationEmailNotification::sendNotification($connectionInfo['email'],
+                            $this->applicationSetting('membership_expiring_send_title', $notificationLanguage),
+                            $this->applicationSetting('membership_expiring_send_message', $notificationLanguage), [
+                                'find' => [
                                     'RealName',
                                     'Role',
                                     'ExpireDate'
-                                ),
-                                'replace' => array(
+                                ],
+                                'replace' => [
                                     $connectionInfo['nick_name'],
-                                    UserService::getServiceManager()->get('Translator')->
-                                            translate($connectionInfo['role_name'], 'default', UserService::getLocalizations()[$notificationLanguage]['locale']),
+                                    ApplicationServiceLocatorService::getServiceLocator()->
+                                            get('Translator')->translate($connectionInfo['role_name'], 'default', $locale),
 
-                                    UserService::getServiceManager()->
-                                            get('viewhelpermanager')->get('date')->__invoke($connectionInfo['expire_date'])
-                                )
-                            ));
+                                    ApplicationServiceLocatorService::getServiceLocator()->
+                                            get('viewhelpermanager')->get('applicationDate')->__invoke($connectionInfo['expire_date'], [], $locale)
+                                ]
+                            ]);
 
                     $notifiedConnections++;
                 }

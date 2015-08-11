@@ -44,6 +44,16 @@ class MembershipBase extends ApplicationAbstractBase
     const MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE = 0;
 
     /**
+     * Membership level connection not notified
+     */
+    const MEMBERSHIP_LEVEL_CONNECTION_NOT_NOTIFIED = 0;
+
+    /**
+     * Membership level connection notified
+     */
+    const MEMBERSHIP_LEVEL_CONNECTION_NOTIFIED = 1;
+
+    /**
      * Images directory
      * @var string
      */
