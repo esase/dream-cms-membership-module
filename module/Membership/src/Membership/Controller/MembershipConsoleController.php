@@ -149,6 +149,9 @@ class MembershipConsoleController extends ApplicationAbstractBaseConsoleControll
             }
         }
 
+        // delete not active empty connections
+        $this->getModel()->deleteNotActiveEmptyConnections();
+
         $verbose = $request->getParam('verbose');
 
         if (!$verbose) {

@@ -117,7 +117,8 @@ class MembershipConsole extends MembershipBase
                 'a.membership_id = b.id',
                 [
                     'role_id'
-                ]
+                ],
+                'left'
             )
             ->join(
                 ['c' => 'user_list'],
@@ -133,18 +134,55 @@ class MembershipConsole extends MembershipBase
                 'd.id = b.role_id',
                 [
                     'role_name' => 'name'
-                ]
+                ],
+                'left'
             )
+            ->limit($limit)
             ->where([
                 'a.active' => self::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE,
                 $predicate->lessThanOrEqualTo('a.expire_date', time())
             ])
-            ->limit($limit);
+            ->where
+                ->or->equalTo('a.active', self::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE)
+                ->and->isNull('a.membership_id');
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
         $resultSet->initialize($statement->execute());
 
         return $resultSet->toArray();
+    }
+
+    /**
+     * Delete not active empty connections
+     *
+     * @return boolean|string
+     */
+    public function deleteNotActiveEmptyConnections()
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $predicate = new Predicate();
+            $delete = $this->delete()
+                ->from('membership_level_connection')
+                ->where([
+                    'active' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE,
+                    $predicate->isNull('membership_id')
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
     }
 }

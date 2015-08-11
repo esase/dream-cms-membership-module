@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
 CREATE TABLE IF NOT EXISTS `membership_level_connection` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id` INT(10) UNSIGNED NOT NULL,
-    `membership_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `membership_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `active` TINYINT(1) UNSIGNED NOT NULL,
     `expire_date` INT(10) UNSIGNED NOT NULL,
     `notify_date` INT(10) UNSIGNED NOT NULL,
@@ -124,5 +124,5 @@ CREATE TABLE IF NOT EXISTS `membership_level_connection` (
         ON DELETE CASCADE,
     FOREIGN KEY (`membership_id`) REFERENCES `membership_level`(`id`)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

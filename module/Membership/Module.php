@@ -20,7 +20,6 @@ class Module implements ConsoleUsageProviderInterface
         $eventManager = MembershipEvent::getEventManager();
 
         // TODO - delete  related memberships while languages delete
-        // TODO - move synchronize users membership levels in console
 
         // someone forced a user's role, and now we must clean all the user's membership queue +
         $eventManager->attach(UserEvent::EDIT_ROLE, function ($e) use ($moduleManager) {
@@ -33,62 +32,6 @@ class Module implements ConsoleUsageProviderInterface
         $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
             $this->deleteMembershipLevels($moduleManager, $e->getParam('object_id'));
         });
-
-        // listen the delete acl event
-      /*  $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
-            $modelManager = $moduleManager->getEvent()
-                ->getParam('ServiceManager')
-                ->get('Application\Model\ModelManager');
-
-            $model = $modelManager->getInstance('Membership\Model\MembershipBase');
-
-            // delete membership levels
-            if (null != ($membershipLevels = 
-                    $model->getAllMembershipLevels($e->getParam('object_id')))) {
-
-                foreach ($membershipLevels as $levelInfo) {
-                    $model->deleteRole($levelInfo, true);
-                }
-            }
-        });*/
-
-        /*$eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
-            // get the model manager instance
-            $modelManager = $moduleManager->getEvent()
-                ->getParam('ServiceManager')
-                ->get('Application\Model\ModelManager');
-
-            $model = $modelManager->getInstance('Membership\Model\MembershipBase');
-
-            // delete connected membership levels
-            if (null != ($membershipLevels = $model->getAllMembershipLevels($e->getParam('object_id')))) {
-            
-            
-                foreach ($membershipLevels as $levelInfo) {
-                    $model->deleteRole($levelInfo, true);
-                }
-
-                // synchronize users membership levels
-                if (null != ($membershipLevels  = $model->getUsersMembershipLevels())) {
-                    $userModel = $modelManager->getInstance('User\Model\Base');
-
-                    // process membership levels
-                    foreach ($membershipLevels as $levelInfo) {
-                        // set the next membership level
-                        if ($levelInfo['active'] != BaseMembershipModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE) {
-                            // change the user's role 
-                            $userModel->editUserRole($levelInfo['user_id'], 
-                                    $levelInfo['role_id'], $levelInfo['role_name'], $levelInfo, true);
-
-                            // activate the next membership connection
-                            $model->activateMembershipConnection($levelInfo['connection_id']);
-                        }
-                    }
-                }
-                
-                
-            }
-        });*/
     }
 
     /**
