@@ -2,6 +2,7 @@
 
 namespace Membership;
 
+use Localization\Event\LocalizationEvent;
 use User\Event\UserEvent;
 use User\Model\UserBase as UserBaseModel;
 use Membership\Event\MembershipEvent;
@@ -14,12 +15,16 @@ class Module implements ConsoleUsageProviderInterface
 {
     /**
      * Init
+     *
+     * @param ModuleManagerInterface $moduleManager
      */
     public function init(ModuleManagerInterface $moduleManager)
     {
         $eventManager = MembershipEvent::getEventManager();
 
-        // TODO - delete  related memberships while languages delete
+        $eventManager->attach(LocalizationEvent::UNINSTALL, function ($e) use ($moduleManager) {
+            $this->deleteLanguageMembershipLevels($moduleManager, $e->getParam('object_id'));
+        });
 
         // someone forced a user's role, and now we must clean all the user's membership queue +
         $eventManager->attach(UserEvent::EDIT_ROLE, function ($e) use ($moduleManager) {
@@ -32,6 +37,28 @@ class Module implements ConsoleUsageProviderInterface
         $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
             $this->deleteMembershipLevels($moduleManager, $e->getParam('object_id'));
         });
+    }
+
+    /**
+     * Delete language membership levels
+     *
+     * @param ModuleManagerInterface $moduleManager
+     * @param string $language
+     * @return void
+     */
+    protected function deleteLanguageMembershipLevels(ModuleManagerInterface $moduleManager, $language)
+    {
+        $model = $moduleManager->getEvent()
+            ->getParam('ServiceManager')
+            ->get('Application\Model\ModelManager')
+            ->getInstance('Membership\Model\MembershipBase');
+
+        // delete membership levels
+        if (null != ($membershipLevels = $model->getAllMembershipLevelsByLanguage($language))) {
+            foreach ($membershipLevels as $levelInfo) {
+                $model->deleteRole($levelInfo, true);
+            }
+        }
     }
 
     /**

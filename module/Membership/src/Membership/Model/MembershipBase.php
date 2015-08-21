@@ -398,6 +398,31 @@ class MembershipBase extends ApplicationAbstractBase
     }
 
     /**
+     * Get all language membership levels
+     *
+     * @param string $language
+     * @return array
+     */
+    public function getAllMembershipLevelsByLanguage($language)
+    {
+        $select = $this->select();
+        $select->from('membership_level')
+            ->columns([
+                'id',
+                'image'
+            ])
+            ->where([
+                'language' => $language
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet->toArray();
+    }
+
+    /**
      * Get all memberhip levels
      *
      * @param integer $roleId
