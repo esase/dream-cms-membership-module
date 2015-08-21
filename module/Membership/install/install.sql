@@ -33,6 +33,39 @@ INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 ('delete_membership_connection', @moduleId, 'Event - Deleting membership connections'),
 ('activate_membership_connection', @moduleId, 'Event - Activating membership connections');
 
+-- system pages
+
+INSERT INTO `page_system` (`slug`, `title`, `module`, `disable_menu`, `privacy`, `forced_visibility`, `disable_user_menu`, `disable_site_map`, `disable_footer_menu`, `disable_seo`, `disable_xml_map`, `pages_provider`, `dynamic_page`) VALUES
+('buy-membership', 'Buy membership', @moduleId, NULL, 'Membership\\PagePrivacy\\MembershipBuyPrivacy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+SET @buyMembershipPageId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_system_page_depend` (`page_id`, `depend_page_id`) VALUES
+(@buyMembershipPageId, 1);
+
+INSERT INTO `page_widget` (`name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
+('membershipLevelWidget', @moduleId, 'public', 'Membership levels', NULL, 1, NULL);
+SET @membershipLevelWidgetId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_system_widget_depend` (`page_id`, `widget_id`, `order`) VALUES
+(@buyMembershipPageId,  @membershipLevelWidgetId,  1);
+
+INSERT INTO `page_widget_page_depend` (`page_id`, `widget_id`) VALUES
+(@buyMembershipPageId,  @membershipLevelWidgetId);
+
+INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
+('membership_sorting_menu_membership_levels', @membershipLevelWidgetId, 'Show the sorting menu', 'checkbox', NULL, 1, 1, NULL, NULL, NULL, NULL);
+SET @membershipWidgetSettingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES
+(@membershipWidgetSettingId, '1', NULL);
+
+INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
+('membership_per_page_menu_membership_levels', @membershipLevelWidgetId, 'Show the per page menu', 'checkbox', NULL, 2, 1, NULL, NULL, NULL, NULL);
+SET @membershipWidgetSettingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES
+(@membershipWidgetSettingId, '1', NULL);
+
 -- application settings
 
 INSERT INTO `application_setting` (`name`, `label`, `description`, `type`, `required`, `order`, `category`, `module`, `language_sensitive`, `values_provider`, `check`, `check_message`) VALUES

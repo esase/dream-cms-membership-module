@@ -30,7 +30,7 @@ return [
         'css_cache'     => true,
         'layout'        => false,
         'localization'  => false,
-        'page'          => false,
+        'page'          => true,
         'user'          => false,
         'xmlrpc'        => false
     ],

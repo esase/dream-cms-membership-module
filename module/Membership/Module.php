@@ -144,6 +144,12 @@ class Module implements ConsoleUsageProviderInterface
     public function getViewHelperConfig()
     {
         return [
+            'invokables' => [
+                'membershipLevelWidget' => 'Membership\View\Widget\MembershipLevelWidget',
+                'membershipImageUrl' => 'Membership\View\Helper\MembershipImageUrl'
+            ],
+            'factories' => [
+            ]
         ];
     }
 

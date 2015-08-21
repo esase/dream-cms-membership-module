@@ -93,7 +93,7 @@ class MembershipBase extends ApplicationAbstractBase
      *      integer lifetime
      *      integer role
      *      integer active
-     * @return Zend\Paginator\Paginator
+     * @return \Zend\Paginator\Paginator
      */
     public function getMembershipLevels($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
