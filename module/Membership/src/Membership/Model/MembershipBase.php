@@ -316,7 +316,7 @@ class MembershipBase extends ApplicationAbstractBase
      *
      * @param integer $userId
      * @param boolean $fullInfo 
-     * @return Zend\Db\ResultSet\ResultSet
+     * @return \Zend\Db\ResultSet\ResultSet
      */
     public function getAllUserMembershipConnections($userId, $fullInfo = false)
     {
@@ -533,5 +533,46 @@ class MembershipBase extends ApplicationAbstractBase
         }
 
         return false;
+    }
+
+    /**
+     * Add a new membership connection
+     *
+     * @param integer $userId
+     * @param integer $membershipId
+     * @param integer $expire
+     * @param integer $notify
+     * @return integer|string
+     */
+    public function addMembershipConnection($userId, $membershipId, $expire, $notify)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+            $insert = $this->insert()
+                ->into('membership_level_connection')
+                ->values([
+                    'active' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE,
+                    'user_id' => $userId,
+                    'membership_id' => $membershipId,
+                    'expire_value' => $expire,
+                    'notify_value' => $notify,
+                    'expire_date' => 0,
+                    'notify_date' => 0,
+                    'notified' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_NOTIFIED
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+            $insertId = $this->adapter->getDriver()->getLastGeneratedValue();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $insertId;
     }
 }

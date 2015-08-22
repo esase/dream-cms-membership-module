@@ -37,10 +37,12 @@ INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 
 INSERT INTO `page_system` (`slug`, `title`, `module`, `disable_menu`, `privacy`, `forced_visibility`, `disable_user_menu`, `disable_site_map`, `disable_footer_menu`, `disable_seo`, `disable_xml_map`, `pages_provider`, `dynamic_page`) VALUES
 ('buy-membership', 'Buy membership', @moduleId, NULL, 'Membership\\PagePrivacy\\MembershipBuyPrivacy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-SET @buyMembershipPageId = (SELECT LAST_INSERT_ID());
+SET @buyMembershipPageId   = (SELECT LAST_INSERT_ID());
+SET @paymentShopingCartPageId = (SELECT `id` FROM `page_system` WHERE `slug` = 'shopping-cart');
 
 INSERT INTO `page_system_page_depend` (`page_id`, `depend_page_id`) VALUES
-(@buyMembershipPageId, 1);
+(@buyMembershipPageId, 1),
+(@buyMembershipPageId, @paymentShopingCartPageId);
 
 INSERT INTO `page_widget` (`name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
 ('membershipLevelWidget', @moduleId, 'public', 'Membership levels', NULL, 1, NULL);

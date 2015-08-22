@@ -3,19 +3,43 @@
 namespace Membership\PaymentHandler;
 
 use Payment\Handler\PaymentAbstractHandler;
+use User\Model\UserBase as UserBaseModel;
+use User\Service\UserIdentity as UserIdentityService;
 
 class MembershipHandler extends PaymentAbstractHandler 
 {
     /**
      * Model instance
-     * @var Membership\Model\MembershipBase
+     * @var \Membership\Model\MembershipBase
      */
     protected $model;
 
     /**
+     * User model instance
+     * @var \User\Model\UserBase
+     */
+    protected $userModel;
+
+    /**
+     * Get user model
+     *
+     * @return \User\Model\UserBase
+     */
+    protected function getUserModel()
+    {
+        if (!$this->userModel) {
+            $this->userModel = $this->serviceLocator
+                ->get('Application\Model\ModelManager')
+                ->getInstance('User\Model\UserBase');
+        }
+
+        return $this->userModel;
+    }
+
+    /**
      * Get model
      *
-     * @return Membership\Model\MembershipBase
+     * @return \Membership\Model\MembershipBase
      */
     protected function getModel()
     {
@@ -51,8 +75,7 @@ class MembershipHandler extends PaymentAbstractHandler
             'slug' => null,
             'title' => $roleInfo['title'],
             'cost' => $roleInfo['cost'],
-            'discount' => $this->getDiscount($id),
-            'count' => 1
+            'discount' => $this->getDiscount($id)
         ];
     }
 
@@ -125,5 +148,34 @@ class MembershipHandler extends PaymentAbstractHandler
      * @return void
      */
     public function setPaid($id, array $transactionInfo)
-    {}
+    {
+        // the default user cannot buy any membership levels,
+        // he(she) must stays as a default user with the admin role
+        if ($transactionInfo['user_id'] == UserBaseModel::DEFAULT_USER_ID
+                || null == ($roleInfo = $this->getModel()->getRoleInfo($id, true))) {
+
+            return;
+        }
+
+        // get a user's membership connections
+        $result = $this->getModel()->getAllUserMembershipConnections($transactionInfo['user_id']);
+        $activateConnection = count($result) ? false : true;
+
+        // add a new membership connection
+        $connectionId = $this->getModel()->addMembershipConnection(
+                $transactionInfo['user_id'], $roleInfo['id'], $roleInfo['lifetime'], $roleInfo['expiration_notification']);
+
+        // activate the membership connection
+        if (is_numeric($connectionId) && $activateConnection) {
+            // change the user's role
+            $userInfo = UserIdentityService::getUserInfo($transactionInfo['user_id']);
+
+            if (true === ($result = $this->getUserModel()->
+                    editUserRole($transactionInfo['user_id'],$roleInfo['role_id'], $roleInfo['role_name'], (array) $userInfo, true))) {
+
+                // activate the membership connection
+                $this->getModel()->activateMembershipConnection($connectionId);
+            }
+        }
+    }
 }

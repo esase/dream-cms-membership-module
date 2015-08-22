@@ -82,9 +82,8 @@ class MembershipLevelWidget extends PageAbstractWidget
             'paginator_per_page_show' => (int) $this->getWidgetSetting('membership_per_page_menu_membership_levels'),
             'unit' => 'membership/partial/_membership-unit',
             'unit_params' => [
-                'image_height' => (int) $this->getSetting('membership_image_height'),
             ],
-            'uniform_height' => '#memberships-wrapper .caption',
+            'uniform_height' => '#memberships-wrapper .thumbnail',
             'per_page' => $perPage,
             'order_by' => $orderBy,
             'order_type' => $orderType

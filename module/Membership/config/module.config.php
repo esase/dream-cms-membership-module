@@ -4,7 +4,8 @@ return [
     'controllers' => [
         'invokables' => [
             'membership-administration' => 'Membership\Controller\MembershipAdministrationController',
-            'memberships-console' => 'Membership\Controller\MembershipConsoleController'
+            'membership-console' => 'Membership\Controller\MembershipConsoleController',
+            'membership-ajax' => 'Membership\Controller\MembershipAjaxController'
         ]
     ],
     'router' => [
@@ -18,7 +19,7 @@ return [
                     'options' => [
                         'route'    => 'membership clean expired connections [--verbose|-v]',
                         'defaults' => [
-                            'controller' => 'memberships-console',
+                            'controller' => 'membership-console',
                             'action'     => 'cleanExpiredMembershipsConnections'
                         ]
                     ]
