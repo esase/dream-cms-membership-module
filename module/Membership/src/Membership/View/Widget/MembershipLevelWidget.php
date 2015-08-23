@@ -86,7 +86,7 @@ class MembershipLevelWidget extends PageAbstractWidget
                 'items_width_small' => $this->getWidgetSetting('membership_list_item_width_small'),
                 'items_width_extra_small' => $this->getWidgetSetting('membership_list_item_width_extra_small')
             ],
-            'uniform_height' => '#memberships-wrapper .thumbnail',
+            'uniform_height' => '#memberships-wrapper .membership-info',
             'per_page' => $perPage,
             'order_by' => $orderBy,
             'order_type' => $orderType
