@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-08-22 14:59+0600\n"
+"PO-Revision-Date: 2015-08-23 12:00+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,54 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "col-xs-12"
+msgstr "100%"
+
+msgid "col-xs-6"
+msgstr "50%"
+
+msgid "col-xs-4"
+msgstr "33.3333%"
+
+msgid "col-xs-3"
+msgstr "25%"
+
+msgid "col-sm-12"
+msgstr "100%"
+
+msgid "col-sm-6"
+msgstr "50%"
+
+msgid "col-sm-4"
+msgstr "33.3333%"
+
+msgid "col-sm-3"
+msgstr "25%"
+
+msgid "col-md-12"
+msgstr "100%"
+
+msgid "col-md-6"
+msgstr "50%"
+
+msgid "col-md-4"
+msgstr "33.3333%"
+
+msgid "col-md-3"
+msgstr "25%"
+
+msgid "Membership items width for extra small devices phones (<768px)"
+msgstr "Items width for extra small devices phones (<768px)"
+
+msgid "Membership items width for small devices tablets (<=768px)"
+msgstr "Items width for small devices tablets (<=768px)"
+
+msgid "Membership items width for medium devices desktops (<=992px)"
+msgstr "Items width for medium devices desktops (<=992px)"
+
+msgid "Display options"
+msgstr "Display options"
 
 msgid "Info"
 msgstr "Info"

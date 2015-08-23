@@ -13,7 +13,7 @@
 
 <!-- render a data grid -->
 <?php $this->content =  $this->partial('partial/data-grid', [
-    'controller' => 'membership-administration',
+    'controller' => 'memberships-administration',
     'action' => 'list',
     'order_by' => $this->order_by,
     'order_type' => $this->order_type,
@@ -75,7 +75,7 @@
         'regular_actions' => [
             [
                 'name' => $this->translate('Add a role'),
-                'controller' => 'membership-administration',
+                'controller' => 'memberships-administration',
                 'action' => 'add-role',
                 'check_acl' => true
             ]
@@ -83,7 +83,7 @@
         'multiple_actions' => [
             [
                 'name' => $this->translate('Delete selected'),
-                'controller' => 'membership-administration',
+                'controller' => 'memberships-administration',
                 'action' => 'delete-roles',
                 'check_acl' => true,
                 'confirm' => $this->translate('Selected roles will be deleted. Are you sure?')
@@ -92,7 +92,7 @@
         'single_actions' => [
             [
                 'name' => $this->translate('Edit the role'),
-                'controller' => 'membership-administration',
+                'controller' => 'memberships-administration',
                 'action' => 'edit-role',
                 'check_acl' => true,
                 'image' => $this->layoutAsset('icon/edit_action.png', 'image')

@@ -35,7 +35,7 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
     public function settingsAction()
     {
         return new ViewModel([
-            'settings_form' => parent::settingsForm('membership', 'membership-administration', 'settings')
+            'settings_form' => parent::settingsForm('membership', 'memberships-administration', 'settings')
         ]);
     }
 
@@ -45,7 +45,7 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
     public function indexAction()
     {
         // redirect to list action
-        return $this->redirectTo('membership-administration', 'list');
+        return $this->redirectTo('memberships-administration', 'list');
     }
 
     /**
@@ -95,7 +95,7 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
         if (null == ($role = $this->
                 getModel()->getRoleInfo($this->getSlug(), false, true))) {
 
-            return $this->redirectTo('membership-administration', 'list');
+            return $this->redirectTo('memberships-administration', 'list');
         }
 
         // get an acl role form
@@ -140,7 +140,7 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('membership-administration', 'edit-role', [
+                return $this->redirectTo('memberships-administration', 'edit-role', [
                     'slug' => $role['id']
                 ]);
             }
@@ -197,7 +197,7 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
                         ->addMessage($this->getTranslator()->translate($result));
                 }
 
-                return $this->redirectTo('membership-administration', 'add-role');
+                return $this->redirectTo('memberships-administration', 'add-role');
             }
         }
 
@@ -264,6 +264,6 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
         // redirect back
         return $request->isXmlHttpRequest()
             ? $this->getResponse()
-            : $this->redirectTo('membership-administration', 'list', [], true);
+            : $this->redirectTo('memberships-administration', 'list', [], true);
     }
 }
