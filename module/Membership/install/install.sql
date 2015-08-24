@@ -24,6 +24,14 @@ INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('memberships_administration_settings', 'ACL - Editing membership settings in admin area', @moduleId),
 ('memberships_administration_delete_roles', 'ACL - Deleting membership roles in admin area', @moduleId);
 
+INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
+('memberships_view_buy_page', 'ACL - Viewing the buy membership page', @moduleId);
+SET @viewPageResourceId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `acl_resource_connection` (`role`, `resource`) VALUES
+(3, @viewPageResourceId),
+(2, @viewPageResourceId);
+
 -- application events
 
 INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
@@ -44,6 +52,58 @@ INSERT INTO `page_system_page_depend` (`page_id`, `depend_page_id`) VALUES
 (@buyMembershipPageId, 1),
 (@buyMembershipPageId, @paymentShopingCartPageId);
 
+INSERT INTO `page_widget_setting_category` (`name`, `module`) VALUES
+('Display options', @moduleId);
+SET @displaySettingCategoryId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget` (`name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
+('membershipUserLevelsWidget', @moduleId, 'public', 'User membership levels', NULL, 1, NULL);
+SET @membershipUserLevelsWidgetId = (SELECT LAST_INSERT_ID());
+SET @userDashboardPageId = (SELECT `id` FROM `page_system` WHERE `slug` = 'dashboard');
+
+INSERT INTO `page_widget_page_depend` (`page_id`, `widget_id`) VALUES
+(@buyMembershipPageId,  @membershipUserLevelsWidgetId),
+(@userDashboardPageId,  @membershipUserLevelsWidgetId);
+
+INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
+('membership_user_list_item_width_medium', @membershipUserLevelsWidgetId, 'Membership items width for medium devices desktops (<=992px)', 'select', 1, 3, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
+SET @widgetSettingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES
+(@widgetSettingId, 'col-md-3', NULL);
+
+INSERT INTO `page_widget_setting_predefined_value` (`setting_id`, `value`) VALUES
+(@widgetSettingId, 'col-md-3'),
+(@widgetSettingId, 'col-md-4'),
+(@widgetSettingId, 'col-md-6'),
+(@widgetSettingId, 'col-md-12');
+
+INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
+('membership_user_list_item_width_small', @membershipUserLevelsWidgetId, 'Membership items width for small devices tablets (<=768px)', 'select', 1, 4, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
+SET @widgetSettingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES
+(@widgetSettingId, 'col-sm-4', NULL);
+
+INSERT INTO `page_widget_setting_predefined_value` (`setting_id`, `value`) VALUES
+(@widgetSettingId, 'col-sm-3'),
+(@widgetSettingId, 'col-sm-4'),
+(@widgetSettingId, 'col-sm-6'),
+(@widgetSettingId, 'col-sm-12');
+
+INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
+('membership_user_list_item_width_extra_small', @membershipUserLevelsWidgetId, 'Membership items width for extra small devices phones (<768px)', 'select', 1, 5, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
+SET @widgetSettingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES
+(@widgetSettingId, 'col-xs-6', NULL);
+
+INSERT INTO `page_widget_setting_predefined_value` (`setting_id`, `value`) VALUES
+(@widgetSettingId, 'col-xs-3'),
+(@widgetSettingId, 'col-xs-4'),
+(@widgetSettingId, 'col-xs-6'),
+(@widgetSettingId, 'col-xs-12');
+
 INSERT INTO `page_widget` (`name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
 ('membershipLevelWidget', @moduleId, 'public', 'Membership levels', NULL, 1, NULL);
 SET @membershipLevelWidgetId = (SELECT LAST_INSERT_ID());
@@ -53,10 +113,6 @@ INSERT INTO `page_system_widget_depend` (`page_id`, `widget_id`, `order`) VALUES
 
 INSERT INTO `page_widget_page_depend` (`page_id`, `widget_id`) VALUES
 (@buyMembershipPageId,  @membershipLevelWidgetId);
-
-INSERT INTO `page_widget_setting_category` (`name`, `module`) VALUES
-('Display options', @moduleId);
-SET @displaySettingCategoryId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
 ('membership_sorting_menu_membership_levels', @membershipLevelWidgetId, 'Show the sorting menu', 'checkbox', NULL, 1, @displaySettingCategoryId, NULL, NULL, NULL, NULL);

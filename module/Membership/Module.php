@@ -146,6 +146,7 @@ class Module implements ConsoleUsageProviderInterface
         return [
             'invokables' => [
                 'membershipLevelWidget' => 'Membership\View\Widget\MembershipLevelWidget',
+                'membershipUserLevelsWidget' => 'Membership\View\Widget\MembershipUserLevelsWidget',
                 'membershipImageUrl' => 'Membership\View\Helper\MembershipImageUrl'
             ],
             'factories' => [

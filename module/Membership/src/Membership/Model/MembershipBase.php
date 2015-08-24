@@ -575,4 +575,40 @@ class MembershipBase extends ApplicationAbstractBase
 
         return $insertId;
     }
+
+    /**
+     * Get membership connection info
+     *
+     * @param integer $id
+     * @param integer $userId
+     * @return array
+     */
+    public function getMembershipConnectionInfo($id, $userId)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'membership_level_connection'])
+            ->columns([
+                'id',
+                'active'
+            ])
+            ->join(
+                ['b' => 'user_list'],
+                'a.user_id = b.user_id',
+                [
+                    'language',
+                    'email',
+                    'nick_name',
+                    'user_id',
+                ]
+            )
+            ->where([
+                'a.id' => $id,
+                'a.user_id' => $userId
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
 }
