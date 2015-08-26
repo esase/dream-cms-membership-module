@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-08-24 12:26+0600\n"
+"PO-Revision-Date: 2015-08-25 10:43+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,9 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Membership items count"
+msgstr "Membership items count"
 
 msgid "User membership levels"
 msgstr "User membership levels"
@@ -107,9 +110,6 @@ msgstr ""
 
 msgid "The module allows you buy different membership levels on the site"
 msgstr "The module allows you buy different membership levels on the site"
-
-msgid "Membership start date"
-msgstr "Membership start date"
 
 msgid "Membership expire date"
 msgstr "Membership expire date"

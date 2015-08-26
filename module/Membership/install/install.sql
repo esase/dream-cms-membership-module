@@ -66,7 +66,14 @@ INSERT INTO `page_widget_page_depend` (`page_id`, `widget_id`) VALUES
 (@userDashboardPageId,  @membershipUserLevelsWidgetId);
 
 INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
-('membership_user_list_item_width_medium', @membershipUserLevelsWidgetId, 'Membership items width for medium devices desktops (<=992px)', 'select', 1, 3, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
+('membership_user_list_items_count', @membershipUserLevelsWidgetId, 'Membership items count', 'integer', 1, 1, @displaySettingCategoryId, NULL, 'return intval(''__value__'') > 0;', 'Value should be greater than 0', NULL);
+SET @widgetSettingId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES
+(@widgetSettingId, '5', NULL);
+
+INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
+('membership_user_list_item_width_medium', @membershipUserLevelsWidgetId, 'Membership items width for medium devices desktops (<=992px)', 'select', 1, 2, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
 SET @widgetSettingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES
@@ -79,7 +86,7 @@ INSERT INTO `page_widget_setting_predefined_value` (`setting_id`, `value`) VALUE
 (@widgetSettingId, 'col-md-12');
 
 INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
-('membership_user_list_item_width_small', @membershipUserLevelsWidgetId, 'Membership items width for small devices tablets (<=768px)', 'select', 1, 4, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
+('membership_user_list_item_width_small', @membershipUserLevelsWidgetId, 'Membership items width for small devices tablets (<=768px)', 'select', 1, 3, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
 SET @widgetSettingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES
@@ -92,7 +99,7 @@ INSERT INTO `page_widget_setting_predefined_value` (`setting_id`, `value`) VALUE
 (@widgetSettingId, 'col-sm-12');
 
 INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
-('membership_user_list_item_width_extra_small', @membershipUserLevelsWidgetId, 'Membership items width for extra small devices phones (<768px)', 'select', 1, 5, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
+('membership_user_list_item_width_extra_small', @membershipUserLevelsWidgetId, 'Membership items width for extra small devices phones (<768px)', 'select', 1, 4, @displaySettingCategoryId, NULL, NULL, NULL, NULL);
 SET @widgetSettingId = (SELECT LAST_INSERT_ID());
 
 INSERT INTO `page_widget_setting_default_value` (`setting_id`, `value`, `language`) VALUES

@@ -61,6 +61,7 @@ class MembershipUserLevelsWidget extends MembershipAbstractWidget
         $pageParamName = 'page_' . $this->widgetConnectionId;
         $page = $this->getView()->applicationRoute()->getQueryParam($pageParamName , 1);
         $wrapperId = 'purchased-memberships-wrapper';
+        $count = (int) $this->getWidgetSetting('membership_user_list_items_count');
 
         // get data list
         $dataList = $this->getView()->partial('partial/data-list', [
@@ -70,7 +71,7 @@ class MembershipUserLevelsWidget extends MembershipAbstractWidget
                 'widget_connection' => $this->widgetConnectionId,
                 'widget_position' => $this->widgetPosition
             ],
-            'paginator' => $this->getModel()->getUserMembershipConnections($userId, $page, 1),
+            'paginator' => $this->getModel()->getUserMembershipConnections($userId, $page, $count),
             'paginator_order_list_show' => false,
             'paginator_order_list' => [
             ],
@@ -83,7 +84,7 @@ class MembershipUserLevelsWidget extends MembershipAbstractWidget
                 'items_width_extra_small' => $this->getWidgetSetting('membership_user_list_item_width_extra_small'),
             ],
             'uniform_height' => '#'. $wrapperId . ' .membership-info',
-            'per_page' => 1
+            'per_page' => $count
         ]);
 
         if ($this->getRequest()->isXmlHttpRequest()) {
