@@ -1,0 +1,24 @@
+<div class="<?php echo $this->escapeHtmlAttr($this->items_width_extra_small) ?> <?php echo $this->escapeHtmlAttr($this->items_width_small) ?> <?php echo $this->escapeHtmlAttr($this->items_width_medium) ?>">
+    <div class="thumbnail">
+        <div class="membership-info">
+            <img  alt="<?php echo $this->escapeHtmlAttr($data->title) ?>" src="<?php echo $this->membershipImageUrl($data->image) ?>" />
+            <div class="caption" >
+                <div class="description">
+                    <h3><?php echo $this->escapeHtml($data->title) ?></h3>
+                    <h4><?php echo $this->escapeHtml($this->paymentCostFormat($data)) ?> (<?php echo $this->escapeHtml($data->lifetime) ?> <?php echo $this->translatePlural('day', 'days', $data->lifetime) ?>)</h4>
+                    <p><?php echo $this->escapeHtml($data->description) ?></p>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <?php if (false !== ($this->pageUrl = $this->pageUrl('shopping-cart'))): ?>
+                <a href="javascript:void(0)" rel="nofollow" onclick="payment.addToShoppingCart(<?php echo $data->id ?>, 'membership')" class="btn btn-primary" role="button">
+                    <?php echo $this->translate('Buy') ?>
+                </a>
+            <?php endif ?>
+            <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('application/page', array('controller' => 'memberships-ajax', 'action' => 'ajax-get-acl-resources', 'slug' => $data->role_id))) ?>', 'popup-acl-resources-window')">
+                <?php echo $this->translate('Info') ?>
+            </a>
+        </div>
+    </div>
+</div>

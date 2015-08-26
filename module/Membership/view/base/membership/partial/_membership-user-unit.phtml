@@ -1,0 +1,28 @@
+<?php use Membership\Model\MembershipBase as MembershipBaseModel; ?>
+
+<div class="<?php echo $this->escapeHtmlAttr($this->items_width_extra_small) ?> <?php echo $this->escapeHtmlAttr($this->items_width_small) ?> <?php echo $this->escapeHtmlAttr($this->items_width_medium) ?>">
+    <div class="thumbnail">
+        <div class="membership-info">
+            <img alt="<?php echo $this->escapeHtmlAttr($data->title) ?>" src="<?php echo $this->membershipImageUrl($data->image) ?>" />
+            <div class="caption" >
+                <div class="description">
+                    <h3><?php echo $this->escapeHtml($data->title) ?></h3>
+                    <div class="date">
+                        <?php if (MembershipBaseModel::MEMBERSHIP_LEVEL_CONNECTION_ACTIVE == $data->active): ?>
+                            <?php $this->layout()->expireMembershipDate = $data->expire_date ?>
+                            <?php echo $this->translate('Membership expire date') ?>: <time><?php echo $this->applicationDate($this->layout()->expireMembershipDate) ?></time>
+                        <?php endif ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <a href="javascript:void(0)" rel="nofollow" confirm="<?php echo $this->escapeHtmlAttr($this->translate('Are you sure?')) ?>" membership-id="<?php echo $this->escapeJs($data->id) ?>" onclick="membership.deletePurchasedMembership(this)" class="btn btn-primary" role="button">
+                <?php echo $this->translate('Delete') ?>
+            </a>
+            <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('application/page', array('controller' => 'memberships-ajax', 'action' => 'ajax-get-acl-resources', 'slug' => $data->role_id))) ?>', 'popup-acl-resources-window')">
+                <?php echo $this->translate('Membership info') ?>
+            </a>
+        </div>
+    </div>
+</div>

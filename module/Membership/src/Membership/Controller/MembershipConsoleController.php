@@ -28,7 +28,7 @@ class MembershipConsoleController extends ApplicationAbstractBaseConsoleControll
     protected $userModel;
 
     /**
-     * Get models
+     * Get model
      *
      * @return Membership\Model\MembershipConsole
      */

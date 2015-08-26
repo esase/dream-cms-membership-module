@@ -1,0 +1,10 @@
+<div id="<?php echo $this->escapeHtmlAttr($this->membership_wrapper) ?>" class="relative-wrapper">
+    <?php echo $this->data ?>
+</div>
+<?php $this->inlineScript()->captureStart() ?>
+    var membership = new Membership();
+    membership.setServerUrl('<?php echo $this->widget_url ?>');
+    membership.setConfirmTitle('<?php echo $this->escapeJs($this->translate('Yes')) ?>');
+    membership.setCancelTitle('<?php echo $this->escapeJs($this->translate('No')) ?>');
+    membership.setContainer('purchased-memberships-wrapper');
+<?php $this->inlineScript()->captureEnd() ?>

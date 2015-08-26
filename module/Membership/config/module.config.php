@@ -3,8 +3,9 @@
 return [
     'controllers' => [
         'invokables' => [
-            'membership-administration' => 'Membership\Controller\MembershipAdministrationController',
-            'memberships-console' => 'Membership\Controller\MembershipConsoleController'
+            'memberships-administration' => 'Membership\Controller\MembershipAdministrationController',
+            'memberships-console' => 'Membership\Controller\MembershipConsoleController',
+            'memberships-ajax' => 'Membership\Controller\MembershipAjaxController'
         ]
     ],
     'router' => [

@@ -93,7 +93,7 @@ class MembershipBase extends ApplicationAbstractBase
      *      integer lifetime
      *      integer role
      *      integer active
-     * @return Zend\Paginator\Paginator
+     * @return \Zend\Paginator\Paginator
      */
     public function getMembershipLevels($page = 1, $perPage = 0, $orderBy = null, $orderType = null, array $filters = [])
     {
@@ -316,7 +316,7 @@ class MembershipBase extends ApplicationAbstractBase
      *
      * @param integer $userId
      * @param boolean $fullInfo 
-     * @return Zend\Db\ResultSet\ResultSet
+     * @return \Zend\Db\ResultSet\ResultSet
      */
     public function getAllUserMembershipConnections($userId, $fullInfo = false)
     {
@@ -533,5 +533,82 @@ class MembershipBase extends ApplicationAbstractBase
         }
 
         return false;
+    }
+
+    /**
+     * Add a new membership connection
+     *
+     * @param integer $userId
+     * @param integer $membershipId
+     * @param integer $expire
+     * @param integer $notify
+     * @return integer|string
+     */
+    public function addMembershipConnection($userId, $membershipId, $expire, $notify)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+            $insert = $this->insert()
+                ->into('membership_level_connection')
+                ->values([
+                    'active' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_ACTIVE,
+                    'user_id' => $userId,
+                    'membership_id' => $membershipId,
+                    'expire_value' => $expire,
+                    'notify_value' => $notify,
+                    'expire_date' => 0,
+                    'notify_date' => 0,
+                    'notified' => self::MEMBERSHIP_LEVEL_CONNECTION_NOT_NOTIFIED
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+            $insertId = $this->adapter->getDriver()->getLastGeneratedValue();
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return $insertId;
+    }
+
+    /**
+     * Get membership connection info
+     *
+     * @param integer $id
+     * @param integer $userId
+     * @return array
+     */
+    public function getMembershipConnectionInfo($id, $userId)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'membership_level_connection'])
+            ->columns([
+                'id',
+                'active'
+            ])
+            ->join(
+                ['b' => 'user_list'],
+                'a.user_id = b.user_id',
+                [
+                    'language',
+                    'email',
+                    'nick_name',
+                    'user_id',
+                ]
+            )
+            ->where([
+                'a.id' => $id,
+                'a.user_id' => $userId
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
     }
 }

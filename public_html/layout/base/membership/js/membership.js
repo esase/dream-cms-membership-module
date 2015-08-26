@@ -36,12 +36,11 @@ Membership = function()
      * @param object link
      * @return void
      */
-    this.deletePurchasedMmembership = function(link)
+    this.deletePurchasedMembership = function(link)
     {
         showConfirmPopup(confirmTitle, cancelTitle, link, function(){
             // send a delete query
-            ajaxQuery(containerId, serverUrl + 
-                    '/ajax-delete-purchased-membership', '', 'post', {id: $(link).attr('membership-id')});
+            ajaxQuery(containerId, serverUrl, '', 'post', {action: 'delete_membership', id: $(link).attr('membership-id')});
         });
     }
 
@@ -49,11 +48,12 @@ Membership = function()
      * Set server url
      *
      * @param sting url
-     * @return object - fluent interface
+     * @return Membership - fluent interface
      */
     this.setServerUrl = function(url)
     {
         serverUrl = url;
+
         return this;
     }
 
@@ -61,11 +61,12 @@ Membership = function()
      * Set confirm title
      *
      * @param sting title
-     * @return object - fluent interface
+     * @return Membership - fluent interface
      */
     this.setConfirmTitle = function(title)
     {
         confirmTitle = title;
+
         return this;
     }
 
@@ -73,11 +74,12 @@ Membership = function()
      * Set cancel title
      *
      * @param sting title
-     * @return object - fluent interface
+     * @return Membership - fluent interface
      */
     this.setCancelTitle = function(title)
     {
         cancelTitle = title;
+
         return this;
     }
 
@@ -85,11 +87,12 @@ Membership = function()
      * Set container
      *
      * @param sting container
-     * @return object - fluent interface
+     * @return Membership - fluent interface
      */
     this.setContainer = function(container)
     {
         containerId = container;
+
         return this;
     }
 }

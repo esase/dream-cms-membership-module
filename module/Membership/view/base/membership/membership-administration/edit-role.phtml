@@ -20,13 +20,13 @@
     'pages' => [
         'list' => [
             'name' => $this->parentPageTitle,
-            'controller' => 'membership-administration',
+            'controller' => 'memberships-administration',
             'action' => 'list',
             'check_acl' => true
         ],
         'edit_role' => [
             'name' => $this->subPageTitle,
-            'controller' => 'membership-administration',
+            'controller' => 'memberships-administration',
             'action' => 'edit-role',
             'check_acl' => true
         ]
@@ -35,15 +35,15 @@
 
 <?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
     [
-        'controller' => 'membership-administration',
+        'controller' => 'memberships-administration',
         'action' => 'delete-roles',
         'name' => $this->translate('Delete the role'),
         'check_acl' => true,
         'confirm' => $this->translate('Role will be deleted. Are you sure?'),
-        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'roles' : [{$this->role['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'membership-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'roles' : [{$this->role['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'memberships-administration', 'action' => 'list'], ['force_canonical' => true])}'}) }"
     ],
     [
-        'controller' => 'membership-administration',
+        'controller' => 'memberships-administration',
         'action' => 'add-role',
         'name' => $this->translate('Add a role'),
         'check_acl' => true
@@ -63,7 +63,7 @@
                 'title' => $this->translate('Editing'),
                 'body' => $this->partial('partial/form', [
                     'form' => $this->role_form,
-                    'controller' => 'membership-administration',
+                    'controller' => 'memberships-administration',
                     'action' => 'edit-role',
                     'params' => [
                         'slug' => $this->role['id']
@@ -82,7 +82,7 @@
                 'title' => $this->translate('Editing'),
                 'body' => $this->partial('partial/form', [
                     'form' => $this->role_form,
-                    'controller' => 'membership-administration',
+                    'controller' => 'memberships-administration',
                     'action' => 'edit-role',
                     'params' => [
                         'slug' => $this->role['id']

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-07-28 10:00+0600\n"
+"PO-Revision-Date: 2015-08-25 10:44+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,77 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "User membership levels"
+msgstr "Уровни членства пользователя"
+
+msgid "col-xs-12"
+msgstr "100%"
+
+msgid "col-xs-6"
+msgstr "50%"
+
+msgid "col-xs-4"
+msgstr "33.3333%"
+
+msgid "col-xs-3"
+msgstr "25%"
+
+msgid "col-sm-12"
+msgstr "100%"
+
+msgid "col-sm-6"
+msgstr "50%"
+
+msgid "col-sm-4"
+msgstr "33.3333%"
+
+msgid "col-sm-3"
+msgstr "25%"
+
+msgid "col-md-12"
+msgstr "100%"
+
+msgid "col-md-6"
+msgstr "50%"
+
+msgid "col-md-4"
+msgstr "33.3333%"
+
+msgid "col-md-3"
+msgstr "25%"
+
+msgid "Membership items width for extra small devices phones (<768px)"
+msgstr ""
+"Ширина элементов списка для экстра маленьких устройств, таких как телефоны "
+"(<768px)"
+
+msgid "Membership items width for small devices tablets (<=768px)"
+msgstr ""
+"Ширина элементов списка для маленьких устройств, таких как планшеты (<=768px)"
+
+msgid "Membership items width for medium devices desktops (<=992px)"
+msgstr ""
+"Ширина элементов списка для средних устройств, таких как настольные "
+"компьютеры (<=992px)"
+
+msgid "Display options"
+msgstr "Опции отображения"
+
+msgid "Info"
+msgstr "Информация"
+
+msgid "Show the per page menu"
+msgstr "Показать меню выбора количества результатов на страницу"
+
+msgid "Show the sorting menu"
+msgstr "Отображать меню сортировки"
+
+msgid "Membership levels"
+msgstr "Уровни членства"
+
+msgid "Buy membership"
+msgstr "Купить уровень членства"
 
 msgid "The selected membership level has been deleted"
 msgstr "Выбранный уровень членства был удален"
@@ -40,11 +111,11 @@ msgstr ""
 "<br /><b>*/1 * * * * /usr/bin/php /путь_к_корню_проекта/public/index.php "
 "membership clean expired connections &> /dev/null</b>"
 
+msgid "Membership items count"
+msgstr "Количество элементов списка"
+
 msgid "The module allows you buy different membership levels on the site"
 msgstr "Модуль позволяет Вам покупать различные уровни членства на сайте"
-
-msgid "Membership start date"
-msgstr "Дата активации уровня членства"
 
 msgid "Membership expire date"
 msgstr "Дата истечения уровня членства"
@@ -150,3 +221,6 @@ msgstr "Добавление ролей членства в админке"
 
 msgid "ACL - Viewing list of membership levels  in admin area"
 msgstr "Просмотр списка уровней членства в админке"
+
+msgid "ACL - Viewing the buy membership page"
+msgstr "Просмотр страницы покупки уровня членства"

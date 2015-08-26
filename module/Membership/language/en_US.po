@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-07-28 10:00+0600\n"
+"PO-Revision-Date: 2015-08-25 10:43+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,75 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Membership items count"
+msgstr "Membership items count"
+
+msgid "User membership levels"
+msgstr "User membership levels"
+
+msgid "col-xs-12"
+msgstr "100%"
+
+msgid "col-xs-6"
+msgstr "50%"
+
+msgid "col-xs-4"
+msgstr "33.3333%"
+
+msgid "col-xs-3"
+msgstr "25%"
+
+msgid "col-sm-12"
+msgstr "100%"
+
+msgid "col-sm-6"
+msgstr "50%"
+
+msgid "col-sm-4"
+msgstr "33.3333%"
+
+msgid "col-sm-3"
+msgstr "25%"
+
+msgid "col-md-12"
+msgstr "100%"
+
+msgid "col-md-6"
+msgstr "50%"
+
+msgid "col-md-4"
+msgstr "33.3333%"
+
+msgid "col-md-3"
+msgstr "25%"
+
+msgid "Membership items width for extra small devices phones (<768px)"
+msgstr "Items width for extra small devices phones (<768px)"
+
+msgid "Membership items width for small devices tablets (<=768px)"
+msgstr "Items width for small devices tablets (<=768px)"
+
+msgid "Membership items width for medium devices desktops (<=992px)"
+msgstr "Items width for medium devices desktops (<=992px)"
+
+msgid "Display options"
+msgstr "Display options"
+
+msgid "Info"
+msgstr "Info"
+
+msgid "Show the per page menu"
+msgstr "Show the per page menu"
+
+msgid "Show the sorting menu"
+msgstr "Show the sorting menu"
+
+msgid "Membership levels"
+msgstr "Membership levels"
+
+msgid "Buy membership"
+msgstr "Buy membership"
 
 msgid "The selected membership level has been deleted"
 msgstr "The selected membership level has been deleted"
@@ -41,9 +110,6 @@ msgstr ""
 
 msgid "The module allows you buy different membership levels on the site"
 msgstr "The module allows you buy different membership levels on the site"
-
-msgid "Membership start date"
-msgstr "Membership start date"
 
 msgid "Membership expire date"
 msgstr "Membership expire date"
@@ -144,3 +210,6 @@ msgstr "Adding membership roles in admin area"
 
 msgid "ACL - Viewing list of membership levels  in admin area"
 msgstr "Viewing list of membership levels  in admin area"
+
+msgid "ACL - Viewing the buy membership page"
+msgstr "Viewing the buy membership page"
