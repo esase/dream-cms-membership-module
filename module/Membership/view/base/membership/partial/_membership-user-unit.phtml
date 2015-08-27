@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="buttons">
-            <a href="javascript:void(0)" rel="nofollow" confirm="<?php echo $this->escapeHtmlAttr($this->translate('Are you sure?')) ?>" membership-id="<?php echo $this->escapeJs($data->id) ?>" onclick="membership.deletePurchasedMembership(this)" class="btn btn-primary" role="button">
+            <a href="javascript:void(0)" rel="nofollow" confirm="<?php echo $this->escapeHtmlAttr($this->translate('Are you sure?')) ?>" membership-id="<?php echo $this->escapeJs($data->id) ?>" onclick="membership.deletePurchasedMembership(this)" class="btn btn-default" role="button">
                 <?php echo $this->translate('Delete') ?>
             </a>
             <a href="javascript:void(0)" rel="nofollow" class="btn btn-default" role="button" onclick="showPopup('<?php echo $this->escapeHtmlAttr($this->url('application/page', array('controller' => 'memberships-ajax', 'action' => 'ajax-get-acl-resources', 'slug' => $data->role_id))) ?>', 'popup-acl-resources-window')">

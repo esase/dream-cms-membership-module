@@ -12,7 +12,7 @@
         </div>
         <div class="buttons">
             <?php if (false !== ($this->pageUrl = $this->pageUrl('shopping-cart'))): ?>
-                <a href="javascript:void(0)" rel="nofollow" onclick="payment.addToShoppingCart(<?php echo $data->id ?>, 'membership')" class="btn btn-primary" role="button">
+                <a href="javascript:void(0)" rel="nofollow" onclick="payment.addToShoppingCart(<?php echo $data->id ?>, 'membership')" class="btn btn-default" role="button">
                     <?php echo $this->translate('Buy') ?>
                 </a>
             <?php endif ?>
