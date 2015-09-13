@@ -5,7 +5,7 @@
             <div class="caption" >
                 <div class="description">
                     <h3><?php echo $this->escapeHtml($data->title) ?></h3>
-                    <h4><?php echo $this->escapeHtml($this->paymentCostFormat($data)) ?> (<?php echo $this->escapeHtml($data->lifetime) ?> <?php echo $this->translatePlural('day', 'days', $data->lifetime) ?>)</h4>
+                    <h4><?php echo $this->escapeHtml($this->paymentProcessCost($data['cost'])) ?> (<?php echo $this->escapeHtml($data->lifetime) ?> <?php echo $this->translatePlural('day', 'days', $data->lifetime) ?>)</h4>
                     <p><?php echo $this->escapeHtml($data->description) ?></p>
                 </div>
             </div>
