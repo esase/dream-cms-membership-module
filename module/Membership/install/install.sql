@@ -233,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     `lifetime` SMALLINT(5) UNSIGNED NOT NULL,
     `expiration_notification` SMALLINT(5) UNSIGNED NOT NULL,
     `description` TEXT NOT NULL,
-    `language` CHAR(2) NOT NULL,
+    `language` CHAR(2) DEFAULT NULL,
     `image` VARCHAR(100) DEFAULT NULL,
     `active` TINYINT(1) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     KEY `active` (`active`, `language`),
     FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `membership_level_connection` (
