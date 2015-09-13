@@ -1,4 +1,6 @@
 Membership 1.0.1, Sep 13, 2015
 ====================================
 
+- added explanation for items in admin menu
+- fixed currency switching
 - added a license info into each file;
