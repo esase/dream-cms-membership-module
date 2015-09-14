@@ -223,6 +223,10 @@ INSERT INTO `application_setting_value` (`setting_id`, `value`, `language`) VALU
 INSERT INTO `payment_module` (`module`, `update_event`, `delete_event`, `page_name`, `countable`, `multi_costs`, `must_login`, `handler`, `extra_options`) VALUES
 (@moduleId, 'edit_membership_role', 'delete_membership_role', 'buy-membership', 0, 0, 1, '\\Membership\\PaymentHandler\\MembershipHandler', NULL);
 
+-- delete content service integration
+INSERT INTO `application_delete_content_service` (`path`, `module`) VALUES
+('\\Membership\\DeleteContentHandler\\MembershipHandler', @moduleId);
+
 -- module's tables
 
 CREATE TABLE IF NOT EXISTS `membership_level` (

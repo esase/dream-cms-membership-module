@@ -34,6 +34,7 @@ use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect as DbSelectPaginator;
 use Zend\Db\Sql\Expression as Expression;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Predicate\Predicate as Predicate;
 use Exception;
 
 class MembershipBase extends ApplicationAbstractBase
@@ -417,15 +418,15 @@ class MembershipBase extends ApplicationAbstractBase
 
         return false;
     }
-
     /**
-     * Get all language membership levels
+     * Get membership levels with empty language
      *
-     * @param string $language
+     * @param integer $limit
      * @return array
      */
-    public function getAllMembershipLevelsByLanguage($language)
+    public function getMembershipLevelsWithEmptyLanguage($limit)
     {
+        $predicate = new Predicate();
         $select = $this->select();
         $select->from('membership_level')
             ->columns([
@@ -433,8 +434,9 @@ class MembershipBase extends ApplicationAbstractBase
                 'image'
             ])
             ->where([
-                'language' => $language
-            ]);
+                $predicate->isNull('language')
+            ])
+            ->limit($limit);
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;
