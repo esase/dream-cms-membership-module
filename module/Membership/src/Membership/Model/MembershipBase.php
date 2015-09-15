@@ -419,12 +419,12 @@ class MembershipBase extends ApplicationAbstractBase
     }
 
     /**
-     * Get all language membership levels
+     * Get unused membership levels
      *
-     * @param string $language
+     * @param integer $limit
      * @return array
      */
-    public function getAllMembershipLevelsByLanguage($language)
+    public function getUnusedMembershipLevels($limit)
     {
         $select = $this->select();
         $select->from('membership_level')
@@ -432,9 +432,11 @@ class MembershipBase extends ApplicationAbstractBase
                 'id',
                 'image'
             ])
-            ->where([
-                'language' => $language
-            ]);
+            ->limit($limit)
+            ->where
+                ->and->isNull('language')
+            ->where
+                ->or->isNull('role_id');
 
         $statement = $this->prepareStatementForSqlObject($select);
         $resultSet = new ResultSet;

@@ -43,71 +43,16 @@ class Module implements ConsoleUsageProviderInterface
     {
         $eventManager = MembershipEvent::getEventManager();
 
-        // TODO: Delete them via the delete service
-        $eventManager->attach(LocalizationEvent::UNINSTALL, function ($e) use ($moduleManager) {
-            $this->deleteLanguageMembershipLevels($moduleManager, $e->getParam('object_id'));
-        });
-
         // someone forced a user's role, and now we must clean all the user's membership queue
         $eventManager->attach(UserEvent::EDIT_ROLE, function ($e) use ($moduleManager) {
             if ($e->getParam('user_id') != UserBaseModel::DEFAULT_SYSTEM_ID) {
                 $this->deleteUserMembershipLevels($moduleManager, $e->getParam('object_id'));
             }
         });
-
-        // TODO: Delete them via the delete service
-        // listen the delete acl role event
-        $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
-            $this->deleteMembershipLevels($moduleManager, $e->getParam('object_id'));
-        });
     }
 
     /**
-     * Delete language membership levels
-     *
-     * @param \Zend\ModuleManager\ModuleManagerInterface $moduleManager
-     * @param string $language
-     * @return void
-     */
-    protected function deleteLanguageMembershipLevels(ModuleManagerInterface $moduleManager, $language)
-    {
-        $model = $moduleManager->getEvent()
-            ->getParam('ServiceManager')
-            ->get('Application\Model\ModelManager')
-            ->getInstance('Membership\Model\MembershipBase');
-
-        // delete membership levels
-        if (null != ($membershipLevels = $model->getAllMembershipLevelsByLanguage($language))) {
-            foreach ($membershipLevels as $levelInfo) {
-                $model->deleteRole($levelInfo, true);
-            }
-        }
-    }
-
-    /**
-     * Delete membership levels
-     *
-     * @param \Zend\ModuleManager\ModuleManagerInterface $moduleManager
-     * @param integer $roleId
-     * @return void
-     */
-    protected function deleteMembershipLevels(ModuleManagerInterface $moduleManager, $roleId)
-    {
-        $model = $moduleManager->getEvent()
-            ->getParam('ServiceManager')
-            ->get('Application\Model\ModelManager')
-            ->getInstance('Membership\Model\MembershipBase');
-
-        // delete membership levels
-        if (null != ($membershipLevels = $model->getAllMembershipLevels($roleId))) {
-            foreach ($membershipLevels as $levelInfo) {
-                $model->deleteRole($levelInfo, true);
-            }
-        }
-    }
-
-    /**
-     * Delete user's membership levels
+     * Delete user's membership levels +
      *
      * @param \Zend\ModuleManager\ModuleManagerInterface $moduleManager
      * @param integer $userId

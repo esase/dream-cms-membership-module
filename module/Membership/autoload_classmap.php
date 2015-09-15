@@ -40,4 +40,5 @@ return [
     'Membership\Exception\MembershipException'                 => __DIR__ . '/src/Membership/Exception/MembershipException.php',
     'Membership\Form\MembershipAclRole'                        => __DIR__ . '/src/Membership/Form/MembershipAclRole.php',
     'Membership\Form\MembershipFilter'                         => __DIR__ . '/src/Membership/Form/MembershipFilter.php',
+    'Membership\DeleteContentHandler\MembershipHandler'        => __DIR__ . '/src/Membership/DeleteContentHandler/MembershipHandler.php'
 ];
