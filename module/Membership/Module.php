@@ -49,38 +49,10 @@ class Module implements ConsoleUsageProviderInterface
                 $this->deleteUserMembershipLevels($moduleManager, $e->getParam('object_id'));
             }
         });
-
-        // TODO: Delete them via the delete service
-        // listen the delete acl role event
-        $eventManager->attach(AclEvent::DELETE_ROLE, function ($e) use ($moduleManager) {
-            $this->deleteMembershipLevels($moduleManager, $e->getParam('object_id'));
-        });
     }
 
     /**
-     * Delete membership levels
-     *
-     * @param \Zend\ModuleManager\ModuleManagerInterface $moduleManager
-     * @param integer $roleId
-     * @return void
-     */
-    protected function deleteMembershipLevels(ModuleManagerInterface $moduleManager, $roleId)
-    {
-        $model = $moduleManager->getEvent()
-            ->getParam('ServiceManager')
-            ->get('Application\Model\ModelManager')
-            ->getInstance('Membership\Model\MembershipBase');
-
-        // delete membership levels
-        if (null != ($membershipLevels = $model->getAllMembershipLevels($roleId))) {
-            foreach ($membershipLevels as $levelInfo) {
-                $model->deleteRole($levelInfo, true);
-            }
-        }
-    }
-
-    /**
-     * Delete user's membership levels
+     * Delete user's membership levels +
      *
      * @param \Zend\ModuleManager\ModuleManagerInterface $moduleManager
      * @param integer $userId

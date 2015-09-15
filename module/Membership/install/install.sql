@@ -232,7 +232,7 @@ INSERT INTO `application_delete_content_service` (`path`, `module`) VALUES
 CREATE TABLE IF NOT EXISTS `membership_level` (
     `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(50) NOT NULL,
-    `role_id` SMALLINT(5) UNSIGNED NOT NULL,
+    `role_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
     `cost` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT 0,
     `lifetime` SMALLINT(5) UNSIGNED NOT NULL,
     `expiration_notification` SMALLINT(5) UNSIGNED NOT NULL,
@@ -246,6 +246,9 @@ CREATE TABLE IF NOT EXISTS `membership_level` (
     KEY `lifetime` (`lifetime`),
     KEY `role` (`role_id`),
     KEY `active` (`active`, `language`),
+    FOREIGN KEY (`role_id`) REFERENCES `acl_role`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
     FOREIGN KEY (`language`) REFERENCES `localization_list`(`language`)
         ON UPDATE CASCADE
         ON DELETE SET NULL

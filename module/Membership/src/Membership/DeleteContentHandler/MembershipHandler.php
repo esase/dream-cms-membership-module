@@ -65,9 +65,7 @@ class MembershipHandler extends ApplicationAbstractDeleteContent
         $itemsDeleted = 0;
 
         // delete membership levels with empty languages
-        if (null != ($membershipLevels = $this->
-                getModel()->getMembershipLevelsWithEmptyLanguage(self::DELETE_ITEMS_LIMIT))) {
-
+        if (null != ($membershipLevels = $this->getModel()->getUnusedMembershipLevels(self::DELETE_ITEMS_LIMIT))) {
             foreach ($membershipLevels as $levelInfo) {
                 if (true === ($result = $this->getModel()->deleteRole($levelInfo, true))) {
                     $itemsDeleted++;
