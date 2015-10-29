@@ -1,7 +1,13 @@
+Membership 1.0.2, Oct 29, 2015
+====================================
+
+- fixed a delete role button's visibility  in admin panel (we cannot see this button if there are subscribers);
+- security added csrf tokens in all forms and post requests;
+
 Membership 1.0.1, Sep 15, 2015
 ====================================
 
-- added functionality for deleting unused membership levels via the "delete content" service
-- added explanation for items in admin menu
-- fixed currency switching
+- added functionality for deleting unused membership levels via the "delete content" service;
+- added explanation for items in admin menu;
+- fixed currency switching;
 - added a license info into each file;
