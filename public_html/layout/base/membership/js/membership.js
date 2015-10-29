@@ -1,31 +1,43 @@
 Membership = function()
 {
     /**
+     * Csrf token
+     *
+     * @var string
+     */
+    var csrfToken;
+
+    /**
      * Server url
+     *
      * @var string
      */
     var serverUrl;
 
     /**
      * Confrim title
+     *
      * @var string
      */
     var confirmTitle;
 
     /**
      * Cancel title
+     *
      * @var string
      */
     var cancelTitle;
 
     /**
      * Container Id
+     *
      * @var string
      */
     var containerId;
 
     /**
      * Current object
+     *
      * @var object
      */
     var self = this;
@@ -40,14 +52,27 @@ Membership = function()
     {
         showConfirmPopup(confirmTitle, cancelTitle, link, function(){
             // send a delete query
-            ajaxQuery(containerId, serverUrl, '', 'post', {action: 'delete_membership', id: $(link).attr('membership-id')});
+            ajaxQuery(containerId, serverUrl, '', 'post', {'csrf' : csrfToken, 'action': 'delete_membership', id: $(link).attr('membership-id')});
         });
+    }
+
+    /**
+     * Set csrf token
+     *
+     * @param string csrf
+     * @return Membership - fluent interface
+     */
+    this.setCsrfToken = function(csrf)
+    {
+        csrfToken = csrf;
+
+        return this;
     }
 
     /**
      * Set server url
      *
-     * @param sting url
+     * @param string url
      * @return Membership - fluent interface
      */
     this.setServerUrl = function(url)
@@ -60,7 +85,7 @@ Membership = function()
     /**
      * Set confirm title
      *
-     * @param sting title
+     * @param string title
      * @return Membership - fluent interface
      */
     this.setConfirmTitle = function(title)
@@ -73,7 +98,7 @@ Membership = function()
     /**
      * Set cancel title
      *
-     * @param sting title
+     * @param string title
      * @return Membership - fluent interface
      */
     this.setCancelTitle = function(title)
@@ -86,7 +111,7 @@ Membership = function()
     /**
      * Set container
      *
-     * @param sting container
+     * @param string container
      * @return Membership - fluent interface
      */
     this.setContainer = function(container)

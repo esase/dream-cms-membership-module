@@ -168,6 +168,7 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
         }
 
         return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
             'role' => $role,
             'role_form' => $aclRoleForm->getForm()
         ]);
@@ -234,7 +235,9 @@ class MembershipAdministrationController extends ApplicationAbstractAdministrati
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($rolesIds = $request->getPost('roles', null))) {
                 // delete selected membership roles
                 $deleteResult = false;

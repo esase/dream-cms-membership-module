@@ -150,6 +150,10 @@ class MembershipAclRole extends ApplicationAbstractCustomForm
             'required' => false,
             'category' => 'General info'
         ],
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
+        ],
         'submit' => [
             'name' => 'submit',
             'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
