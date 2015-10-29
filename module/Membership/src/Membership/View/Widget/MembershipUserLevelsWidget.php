@@ -25,6 +25,7 @@ namespace Membership\View\Widget;
 use User\Service\UserIdentity as UserIdentityService;
 use Membership\Model\MembershipBase as MembershipBaseModel;
 use Acl\Model\AclBase as AclBaseModel;
+use Application\Utility\ApplicationCsrf as ApplicationCsrfUtility;
 
 class MembershipUserLevelsWidget extends MembershipAbstractWidget
 {
@@ -65,7 +66,9 @@ class MembershipUserLevelsWidget extends MembershipAbstractWidget
         $userId = UserIdentityService::getCurrentUserIdentity()['user_id'];
 
         // process post actions
-        if ($this->getRequest()->isPost()) {
+        if ($this->getRequest()->isPost() &&
+                ApplicationCsrfUtility::isTokenValid($this->getRequest()->getPost('csrf'))) {
+
             $action = $this->getRequest()->getPost('action');
 
             if ($action) {
@@ -113,6 +116,7 @@ class MembershipUserLevelsWidget extends MembershipAbstractWidget
         }
 
         return $this->getView()->partial('membership/widget/membership-user', [
+            'csrf_token' => ApplicationCsrfUtility::getToken(),
             'widget_url' => $this->getWidgetConnectionUrl(),
             'membership_wrapper' => $wrapperId,
             'data' => $dataList
